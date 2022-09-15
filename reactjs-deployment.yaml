@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    deploy: reactjs
+  name: reactjs-deployment
+  namespace: vinay
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: reactjs
+        tier: frontend
+      name: reactjs-pod
+    spec:
+      containers:
+      - command:
+        - npm
+        - start
+        env:
+        - name: APPNAME
+          value: nxt_trends_login_page
+        - name: APPVERSION
+          value: version-1.0.0
+        image: vinaytalla/reactjs:v1
+        imagePullPolicy: IfNotPresent
+        name: reatjs-cont
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+          
+          
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+   name: reactjs-svc
+   namesapce: vinay
+spec:
+  selector:
+     tier: frontend
+  type: NodePort
+  ports:
+     - port: 3000 # service port
+       targetPort: 3000  # port where application is listening
+       nodePort: 30456  #  nodeport range ( 30000-32768)
+---
+ 
